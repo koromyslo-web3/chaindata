@@ -1,0 +1,31 @@
+services:
+  liqman-chaindata-api:
+    container_name: liqman-chaindata-api
+    build: ./app
+    volumes:
+      - ./app:/usr/src/app
+    ports:
+      - 8001:8000
+    depends_on:
+      - liqman-chaindata-db
+    environment:
+      DEBUG: ${DEBUG}
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+
+  liqman-chaindata-db:
+    container_name: liqman-chaindata-db
+    image: postgres:16
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - v_liqman_chaindata_db:/var/lib/postgresql/data
+
+volumes:
+  v_liqman_chaindata_db:

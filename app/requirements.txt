@@ -1,0 +1,16 @@
+alembic
+apscheduler
+asyncpg
+fastapi
+httpx[socks]
+nats-py
+numpy
+passlib
+pycryptodome
+pydantic
+python-jose
+python-multipart
+redis
+sqlalchemy[asyncio]
+uvicorn
+web3
