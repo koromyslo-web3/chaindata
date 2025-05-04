@@ -3,7 +3,7 @@ import logging
 
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
-from httpx import AsyncClient, BasicAuth, Response
+from httpx import AsyncClient, BasicAuth
 from jose import JWTError, jwt
 
 from ... import config
@@ -77,14 +77,11 @@ class BaseService:
                 )
 
         response = await request()
-        if response.status_code != 401:
-            return response.json()
-
-        await self._update_token()
-
-        response: Response = await request()
         if response.status_code == 401:
-            raise AuthException()
+            await self._update_token()
+            response = await request()
+            if response.status_code == 401:
+                raise AuthException()
 
         if not response.is_success:
             raise ServiceException(response.text)
