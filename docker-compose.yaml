@@ -15,9 +15,9 @@ x-environment: &environment
 services:
   liqman-chaindata-api:
     container_name: liqman-chaindata-api
-    build: ./app
+    build: ./src
     volumes:
-      - ./app:/usr/src/app
+      - ./src:/usr/app/src
     ports:
       - 8001:8000
     depends_on:

@@ -1,7 +1,7 @@
-FROM python:3.13-alpine
+FROM python:3.11
 
 # set work directory
-WORKDIR /usr/src/app
+WORKDIR /usr/app/src
 
 # set env variables
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -16,8 +16,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # copy project
 COPY . .
 
-WORKDIR /usr/src
+WORKDIR /usr/app
 
 EXPOSE 8000
 
-CMD ["python", "-m", "app"]
+CMD ["python", "-m", "src"]
