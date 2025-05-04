@@ -1,13 +1,18 @@
-from ... import config
-from httpx import AsyncClient, Response, BasicAuth
-from fastapi.security import OAuth2PasswordBearer
+from base64 import b64decode
+import logging
+
 from fastapi import Depends, HTTPException
-from jose import jwt, JWTError
+from fastapi.security import OAuth2PasswordBearer
+from httpx import AsyncClient, BasicAuth, Response
+from jose import JWTError, jwt
+
+from ... import config
 
 oauth_scheme = OAuth2PasswordBearer(tokenUrl="")
 
 _AUTH = BasicAuth(config.AUTH_CLIENT_ID, config.AUTH_CLIENT_SECRET)
 _AUTH_HOST = config.AUTH_HOST.rstrip("/")
+_PUBKEY = b64decode(config.AUTH_JWT_PUBLIC_B64).decode()
 
 
 class ServiceException(Exception):
@@ -27,14 +32,12 @@ async def _get_token() -> str:
         response = await c.post(_AUTH_HOST + "/token/service")
         if response.status_code != 200:
             raise CredentialsException()
-        return response.json().get("token")
+        return response.json()["token"]
 
 
 def auth(token_str=Depends(oauth_scheme)) -> str:
     try:
-        decoded = jwt.decode(
-            token_str, config.AUTH_JWT_PUBLIC_B64, config.AUTH_JWT_ALGO
-        )
+        decoded = jwt.decode(token_str, _PUBKEY, config.AUTH_JWT_ALGO)
     except JWTError:
         raise HTTPException(401)
 
@@ -52,20 +55,22 @@ class BaseService:
 
     async def _update_token(self):
         self._token = await _get_token()
+        logging.debug("Token updated")
 
     @property
     def headers(self):
         return {"Authorization": f"Bearer {self._token}"}
 
-    async def _request(self, method: str, uri: str, query=None, json=None, timeout=300):
-
+    async def _request(
+        self, method: str, uri: str, params=None, json=None, timeout=300
+    ):
         async def request():
             async with AsyncClient() as client:
                 url = self.host + uri
                 return await client.request(
                     method,
                     url,
-                    query=query,
+                    params=params,
                     json=json,
                     headers=self.headers,
                     timeout=timeout,

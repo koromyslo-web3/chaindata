@@ -1,12 +1,15 @@
-from pydantic import BaseModel, Field, model_validator
 from uuid import UUID
-from ..utils.funcs import to_checksum
+
+from pydantic import BaseModel, Field, model_validator
+
 from ..interfaces.db import repository
+from ..interfaces.services import Wallets
+from ..utils.funcs import to_checksum
 
 
 class Transaction(BaseModel):
     id: UUID | None = None
-    network_id: str
+    network_id: str | None = None
 
     from_: str | None = Field(alias="from", default=None)
     to: str | None = None
@@ -22,7 +25,7 @@ class Transaction(BaseModel):
         return self.model_dump(by_alias=True, exclude=["id"])
 
     async def sign(self):
-        pass
+        self._signed = await Wallets.sign(self.txn_dict())
 
     async def send(self):
         pass

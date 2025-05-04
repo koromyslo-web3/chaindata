@@ -12,6 +12,8 @@ x-environment: &environment
   AUTH_CLIENT_ID: ${AUTH_CLIENT_ID}
   AUTH_CLIENT_SECRET: ${AUTH_CLIENT_SECRET}
 
+  WALLETS_HOST: ${WALLETS_HOST}
+
 services:
   liqman-chaindata-api:
     container_name: liqman-chaindata-api

@@ -37,7 +37,7 @@ AUTH_HOST: str = os.getenv("AUTH_HOST").rstrip("/")
 AUTH_CLIENT_ID: str = os.getenv("AUTH_CLIENT_ID", "HS256")
 AUTH_CLIENT_SECRET: str = os.getenv("AUTH_CLIENT_SECRET", "HS256")
 
-WALLETS_API_ENDPOINT: str = os.getenv("WALLETS_API_ENDPOINT", "HS256").rstrip("/")
+WALLETS_HOST: str = os.getenv("WALLETS_HOST", "HS256").rstrip("/")
 
 
 logging.basicConfig(
