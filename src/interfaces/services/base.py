@@ -4,7 +4,7 @@ from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends, HTTPException
 from jose import jwt, JWTError
 
-oauth_scheme = OAuth2PasswordBearer(tokenUrl="/token/service")
+oauth_scheme = OAuth2PasswordBearer(tokenUrl="")
 
 _AUTH = BasicAuth(config.AUTH_CLIENT_ID, config.AUTH_CLIENT_SECRET)
 _AUTH_HOST = config.AUTH_HOST.rstrip("/")
