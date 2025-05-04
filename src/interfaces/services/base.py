@@ -2,13 +2,13 @@ from base64 import b64decode
 import logging
 
 from fastapi import Depends, HTTPException
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPBearer
 from httpx import AsyncClient, BasicAuth
 from jose import JWTError, jwt
 
 from ... import config
 
-oauth_scheme = OAuth2PasswordBearer(tokenUrl="")
+bearer_scheme = HTTPBearer()
 
 _AUTH = BasicAuth(config.AUTH_CLIENT_ID, config.AUTH_CLIENT_SECRET)
 _AUTH_HOST = config.AUTH_HOST.rstrip("/")
@@ -35,7 +35,7 @@ async def _get_token() -> str:
         return response.json()["token"]
 
 
-def auth(token_str=Depends(oauth_scheme)) -> str:
+def auth(token_str=Depends(bearer_scheme)) -> str:
     try:
         decoded = jwt.decode(token_str, _PUBKEY, config.AUTH_JWT_ALGO)
     except JWTError:
