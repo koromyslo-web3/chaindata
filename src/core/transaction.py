@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field, model_validator
 from uuid import UUID
 from ..utils.funcs import to_checksum
-from ..db import repository
+from ..interfaces.db import repository
 
 
 class Transaction(BaseModel):

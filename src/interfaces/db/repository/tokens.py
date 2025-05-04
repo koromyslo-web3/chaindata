@@ -3,7 +3,7 @@ from sqlalchemy.dialects.postgresql import insert
 
 from ..engine import UnitOfWork
 from ..orm import OrmToken
-from ...utils.funcs import exclude_none_from_kwargs
+from ....utils.funcs import exclude_none_from_kwargs
 
 
 async def get_many(**kwargs):

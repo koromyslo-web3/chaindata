@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Query, Response
 
-from ..db import repository
+from ..interfaces.db import repository
 
 router = APIRouter()
 

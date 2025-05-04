@@ -2,7 +2,7 @@ from sqlalchemy import select
 
 from ..engine import UnitOfWork
 from ..orm import OrmNetwork
-from ...utils.funcs import exclude_none_from_kwargs
+from ....utils.funcs import exclude_none_from_kwargs
 
 
 async def get(**kwargs) -> dict | None:
