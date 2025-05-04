@@ -16,6 +16,7 @@ class OrmNetwork(Base):
     type = sa.Column(sa.String(), nullable=False)
     native_symbol = sa.Column(sa.String(), nullable=False)
     endpoints = sa.Column(psql.JSONB(), nullable=False)
+    meta = sa.Column(psql.JSONB())
     is_active = sa.Column(sa.Boolean(), nullable=False)
 
 
@@ -34,16 +35,15 @@ class OrmToken(Base):
     )
 
 
-class OrmBalance(Base):
-    __tablename__ = "balances"
-    id = sa.Column(sa.BigInteger(), primary_key=True, autoincrement=True)
+class OrmTransaction(Base):
+    __tablename__ = "transactions"
+    id = sa.Column(psql.UUID(True), default=uuid4, primary_key=True)
     created_at = sa.Column(sa.DateTime(), server_default=sa.func.now())
     updated_at = sa.Column(sa.DateTime(), onupdate=sa.func.now())
-    address = sa.Column(sa.String(), index=True)
-    token_id = sa.Column(psql.UUID(True), sa.ForeignKey("tokens.id"), index=True)
-    amount = sa.Column(sa.Numeric(60, 0))
-    last_synced_at = sa.Column(sa.DateTime())
-
-    __tableargs__ = (
-        sa.UniqueConstraint("wallet", "token_id", name="uq_wallet_token_id"),
-    )
+    network_id = sa.Column(sa.String(), sa.ForeignKey("networks.id"))
+    price = sa.Column(sa.Numeric(60, 0))
+    status = sa.Column(sa.String())
+    txn_hash = sa.Column(sa.String())
+    success = sa.Column(sa.Boolean())
+    request_data = sa.Column(psql.JSONB())
+    response_data = sa.Column(psql.JSONB())

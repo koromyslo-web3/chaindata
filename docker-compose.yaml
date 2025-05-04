@@ -1,3 +1,17 @@
+x-environment: &environment
+  DEBUG: ${DEBUG}
+
+  DB_HOST: ${DB_HOST}
+  DB_NAME: ${DB_NAME}
+  DB_USERNAME: ${DB_USERNAME}
+  DB_PASSWORD: ${DB_PASSWORD}
+
+  AUTH_JWT_PUBLIC_B64: ${AUTH_JWT_PUBLIC_B64}
+  AUTH_JWT_ALGO: ${AUTH_JWT_ALGO}
+  AUTH_HOST: ${AUTH_HOST}
+  AUTH_CLIENT_ID: ${AUTH_CLIENT_ID}
+  AUTH_CLIENT_SECRET: ${AUTH_CLIENT_SECRET}
+
 services:
   liqman-chaindata-api:
     container_name: liqman-chaindata-api
@@ -9,17 +23,13 @@ services:
     depends_on:
       - liqman-chaindata-db
     environment:
-      DEBUG: ${DEBUG}
-      DB_HOST: ${DB_HOST}
-      DB_NAME: ${DB_NAME}
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
+      <<: *environment
 
   liqman-chaindata-db:
     container_name: liqman-chaindata-db
     image: postgres:16
     ports:
-      - 5432:5432
+      - 5433:5432
     environment:
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}

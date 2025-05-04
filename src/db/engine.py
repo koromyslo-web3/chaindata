@@ -27,9 +27,9 @@ Session = sessionmaker(
 
 
 class UnitOfWork:
-    def __init__(self, commit=True, session_factory=Session):
+    def __init__(self, autocommit=True, session_factory=Session):
         self.session_factory = session_factory
-        self.commit = commit
+        self.commit = autocommit
 
     async def __aenter__(self):
         self.session = self.session_factory()

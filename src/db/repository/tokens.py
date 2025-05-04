@@ -8,7 +8,7 @@ from ...utils.funcs import exclude_none_from_kwargs
 
 async def get_many(**kwargs):
     filters = exclude_none_from_kwargs(**kwargs)
-    async with UnitOfWork(commit=False) as session:
+    async with UnitOfWork(autocommit=False) as session:
         stmt = select(
             OrmToken.symbol,
             OrmToken.contract,
