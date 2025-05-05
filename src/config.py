@@ -1,5 +1,6 @@
 import logging
 import os
+from shared import Auth, WalletService
 
 
 def _env2bool(key, default=None):
@@ -38,6 +39,11 @@ AUTH_CLIENT_ID: str = os.getenv("AUTH_CLIENT_ID", "HS256")
 AUTH_CLIENT_SECRET: str = os.getenv("AUTH_CLIENT_SECRET", "HS256")
 
 WALLETS_HOST: str = os.getenv("WALLETS_HOST", "HS256").rstrip("/")
+
+auth = Auth(
+    AUTH_HOST, AUTH_JWT_PUBLIC_B64, AUTH_JWT_ALGO, AUTH_CLIENT_ID, AUTH_CLIENT_SECRET
+)
+wallets_service = WalletService(WALLETS_HOST, auth)
 
 
 logging.basicConfig(
