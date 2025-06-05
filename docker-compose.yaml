@@ -1,43 +1,47 @@
 x-environment: &environment
-  DEBUG: ${DEBUG}
+    DEBUG: ${DEBUG}
 
-  DB_HOST: ${DB_HOST}
-  DB_NAME: ${DB_NAME}
-  DB_USERNAME: ${DB_USERNAME}
-  DB_PASSWORD: ${DB_PASSWORD}
+    DB_HOST: ${DB_HOST}
+    DB_NAME: ${DB_NAME}
+    DB_USERNAME: ${DB_USERNAME}
+    DB_PASSWORD: ${DB_PASSWORD}
 
-  AUTH_JWT_PUBLIC_B64: ${AUTH_JWT_PUBLIC_B64}
-  AUTH_JWT_ALGO: ${AUTH_JWT_ALGO}
-  AUTH_HOST: ${AUTH_HOST}
-  AUTH_CLIENT_ID: ${AUTH_CLIENT_ID}
-  AUTH_CLIENT_SECRET: ${AUTH_CLIENT_SECRET}
+    AUTH_JWT_PUBLIC_B64: ${AUTH_JWT_PUBLIC_B64}
+    AUTH_JWT_ALGO: ${AUTH_JWT_ALGO}
+    AUTH_HOST: ${AUTH_HOST}
+    AUTH_CLIENT_ID: ${AUTH_CLIENT_ID}
+    AUTH_CLIENT_SECRET: ${AUTH_CLIENT_SECRET}
 
-  WALLETS_HOST: ${WALLETS_HOST}
+    WALLETS_HOST: ${WALLETS_HOST}
 
 services:
-  liqman-chaindata-api:
-    container_name: liqman-chaindata-api
-    build: ./src
-    volumes:
-      - ./src:/usr/app/src
-    ports:
-      - 8001:8000
-    depends_on:
-      - liqman-chaindata-db
-    environment:
-      <<: *environment
+    lm-chaindata-api:
+        container_name: lm-chaindata-api
+        build: ./src
+        volumes:
+            - ./src:/usr/app/src
+        ports:
+            - 8004:8000
+        depends_on:
+            - lm-chaindata-db
+        environment:
+            <<: *environment
 
-  liqman-chaindata-db:
-    container_name: liqman-chaindata-db
-    image: postgres:16
-    ports:
-      - 5433:5432
-    environment:
-      - POSTGRES_USER=${DB_USERNAME}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
-    volumes:
-      - v_liqman_chaindata_db:/var/lib/postgresql/data
+    lm-chaindata-db:
+        container_name: lm-chaindata-db
+        image: postgres:16
+        ports:
+            - 5436:5432
+        environment:
+            - POSTGRES_USER=${DB_USERNAME}
+            - POSTGRES_PASSWORD=${DB_PASSWORD}
+            - POSTGRES_DB=${DB_NAME}
+        volumes:
+            - v_lm_chaindata_db:/var/lib/postgresql/data
 
 volumes:
-  v_liqman_chaindata_db:
+    v_lm_chaindata_db:
+
+networks:
+    koromyslo-shared:
+        external: true

@@ -1,8 +1,14 @@
 from httpx import AsyncClient
 from asyncio import sleep
 
+NULL_ADDRESS = "0x" + "0" * 40
+
 
 class EVMError(Exception):
+    def __init__(self, response, *args):
+        self.response = response
+        super().__init__(*args)
+
     pass
 
 
@@ -69,16 +75,26 @@ class Ethereum:
         params = [address, "latest"]
         return await self.__request("eth_getCode", params)
 
-    async def sendRawTransaction(self, signed_data: str, _id: int = 1):
-        return await self.__request("eth_sendRawTransaction", [signed_data], _id)
+    async def sendRawTransaction(self, signed_data: str):
+        return await self.__request("eth_sendRawTransaction", [signed_data])
 
     async def getNonce(self, address: str) -> int:
         res = await self.__request("eth_getTransactionCount", [address, "latest"])
         return int(res, 16)
 
-    async def waitForTxn(
-        self, txn_hash: str, gap: float = 2, timeout: int = 120
-    ):
+    async def estimateGas(self, data: dict) -> int:
+        res = await self.__request("eth_estimateGas", [data])
+        return int(res, 16)
+    
+    async def gasPrice(self):
+        res = await self.__request("eth_gasPrice", [])
+        return int(res, 16)
+
+    async def call(self, from_, to, data, block="latest"):
+        params = [{"from": from_, "to": to, "data": data}, block]
+        return await self.__request("eth_call", params)
+
+    async def waitForTxn(self, txn_hash: str, gap: float = 2, timeout: int = 120):
         waited = 0
         while waited < timeout:
             receipt = await self.getReceipt(txn_hash)

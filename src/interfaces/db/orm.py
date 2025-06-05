@@ -20,21 +20,6 @@ class OrmNetwork(Base):
     is_active = sa.Column(sa.Boolean(), nullable=False)
 
 
-class OrmToken(Base):
-    __tablename__ = "tokens"
-    id = sa.Column(psql.UUID(True), default=uuid4, primary_key=True)
-    created_at = sa.Column(sa.DateTime(), server_default=sa.func.now())
-    updated_at = sa.Column(sa.DateTime(), onupdate=sa.func.now())
-    symbol = sa.Column(sa.String(), index=True)
-    network_id = sa.Column(sa.String(), sa.ForeignKey("networks.id"), index=True)
-    decimals = sa.Column(sa.SmallInteger())
-    contract = sa.Column(sa.String(), index=True)
-
-    __tableargs__ = (
-        sa.UniqueConstraint("network_id", "contract", name="uq_network_contract"),
-    )
-
-
 class OrmTransaction(Base):
     __tablename__ = "transactions"
     id = sa.Column(psql.UUID(True), default=uuid4, primary_key=True)
@@ -46,4 +31,4 @@ class OrmTransaction(Base):
     txn_hash = sa.Column(sa.String())
     success = sa.Column(sa.Boolean())
     request_data = sa.Column(psql.JSONB())
-    response_data = sa.Column(psql.JSONB())
+    receipt = sa.Column(psql.JSONB())

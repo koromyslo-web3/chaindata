@@ -1,14 +1,15 @@
-from ..orm import OrmTransaction
+from sqlalchemy import select, update
+
 from ..engine import UnitOfWork
-from sqlalchemy import update
+from ..orm import OrmTransaction
 
 
-async def create_transaction(network_id: str, txn_hash: str, request_data: dict):
+async def create_transaction(network_id: str, request_data: dict):
     async with UnitOfWork(autocommit=True) as session:
         obj = OrmTransaction(
             network_id=network_id,
-            txn_hash=txn_hash,
             request_data=request_data,
+            status="Created"
         )
         session.add(obj)
 
@@ -19,3 +20,14 @@ async def update_transaction(id, **kwargs):
     async with UnitOfWork(autocommit=True) as session:
         stmt = update(OrmTransaction).where(OrmTransaction.id == id).values(**kwargs)
         await session.execute(stmt)
+
+async def _get_mappings_first(stmt) -> dict:
+    async with UnitOfWork() as session:
+        q = await session.execute(stmt)
+        return q.mappings().first()
+
+
+async def get_one(*args, **kwargs) -> dict:
+    fields = (getattr(OrmTransaction, arg) for arg in args)
+    stmt = select(*fields).filter_by(is_active=True, **kwargs)
+    return await _get_mappings_first(stmt)
