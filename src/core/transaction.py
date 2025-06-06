@@ -95,7 +95,7 @@ class TransactionBase(BaseModel):
 
         price = int(receipt["effectiveGasPrice"], 0) * int(receipt["gasUsed"], 0)
         await repository.transactions.update_transaction(
-            self._id, receipt=receipt, price=price
+            self._id, receipt=receipt, price=price, status="Success"
         )
 
 

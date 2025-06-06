@@ -9,12 +9,22 @@ async def _get_mappings_first(stmt) -> dict:
     async with UnitOfWork() as session:
         q = await session.execute(stmt)
         return q.mappings().first()
+    
+async def _get_mappings_all(stmt) -> dict:
+    async with UnitOfWork() as session:
+        q = await session.execute(stmt)
+        return q.mappings().all()
 
 
 async def get_one(*args, **kwargs) -> dict:
     fields = (getattr(OrmNetwork, arg) for arg in args)
     stmt = select(*fields).filter_by(is_active=True, **kwargs)
     return await _get_mappings_first(stmt)
+
+async def get_many(*args, **kwargs) -> dict:
+    fields = (getattr(OrmNetwork, arg) for arg in args)
+    stmt = select(*fields).filter_by(is_active=True, **kwargs)
+    return await _get_mappings_all(stmt)
 
 
 async def get(**kwargs) -> dict | None:
